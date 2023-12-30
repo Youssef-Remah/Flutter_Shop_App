@@ -40,6 +40,7 @@ dependencies:
   dio: ^5.4.0
   conditional_builder_null_safety: ^0.0.6
   shared_preferences: ^2.2.2
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - lib/assets/images/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
