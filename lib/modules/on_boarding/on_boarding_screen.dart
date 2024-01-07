@@ -27,13 +27,34 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        actions:
+        [
+          TextButton(
+              onPressed: ()
+              {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute (builder: (BuildContext context) => const ShopLoginScreen()),
+                        (route) => false
+                );
+              },
+              child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                  ),
+              ),
+          )
+        ],
+      ),
       body: SizedBox(
         height: screenHeight,
         child: Column(
           children:
           [
             SizedBox(
-              height: screenHeight * 0.8,
+              height: screenHeight * 0.7,
               child: PageView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) => buildOnBoardingItem(OnBoardingModel: onBoardings[index]),
@@ -52,6 +73,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                        controller: onBoardingController,
                        count: onBoardings.length,
                        effect: ExpandingDotsEffect(
+                         activeDotColor: Colors.blue,
                          dotHeight: 10.0,
                          dotWidth: 13.0,
                          spacing: 5.0,
