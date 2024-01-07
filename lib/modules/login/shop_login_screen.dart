@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:shop_app/modules/login/cubit.dart';
 import 'package:shop_app/modules/login/states.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
@@ -28,7 +29,42 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
 
       child: BlocConsumer<ShopLoginCubit, ShopLoginStates>(
 
-        listener: (BuildContext context, ShopLoginStates state) {  },
+        listener: (BuildContext context, ShopLoginStates state)
+        {
+          if(state is ShopLoginSuccessState)
+          {
+            if(state.loginModel.status)
+            {
+              showToast(
+                borderRadius: BorderRadius.circular(10.0),
+                state.loginModel.message,
+                context: context,
+                animation: StyledToastAnimation.slideFromBottom,
+                reverseAnimation: StyledToastAnimation.slideToBottom,
+                position: StyledToastPosition.bottom,
+                duration: const Duration(seconds: 5),
+                animDuration: const Duration(milliseconds: 250),
+                backgroundColor: Colors.green,
+                textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
+              );
+            }
+            else
+            {
+              showToast(
+                borderRadius: BorderRadius.circular(10.0),
+                state.loginModel.message,
+                context: context,
+                animation: StyledToastAnimation.slideFromBottom,
+                reverseAnimation: StyledToastAnimation.slideToBottom,
+                position: StyledToastPosition.bottom,
+                duration: const Duration(seconds: 5),
+                animDuration: const Duration(milliseconds: 250),
+                backgroundColor: Colors.red,
+                textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
+              );
+            }
+          }
+        },
 
         builder: (BuildContext context, ShopLoginStates state)
         {
