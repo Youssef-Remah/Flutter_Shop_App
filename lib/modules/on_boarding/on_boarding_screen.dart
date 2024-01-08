@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/on_boarding_model.dart';
 import 'package:shop_app/modules/login/shop_login_screen.dart';
+import 'package:shop_app/shared/network/local/cache_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -21,6 +22,21 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   PageController onBoardingController = PageController();
 
+  void submit()
+  {
+
+    CacheHelper.saveData(key: 'onBoarding', value: true).then((value){
+      if(value)
+      {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute (builder: (BuildContext context) => const ShopLoginScreen()),
+                (route) => false
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -31,14 +47,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         actions:
         [
           TextButton(
-              onPressed: ()
-              {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute (builder: (BuildContext context) => const ShopLoginScreen()),
-                        (route) => false
-                );
-              },
+              onPressed: submit,
               child: const Text(
                   'Skip',
                   style: TextStyle(
@@ -94,11 +103,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
                         if( (pageIndex != null) && (pageIndex.round() == onBoardings.length-1) )
                         {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute (builder: (BuildContext context) => const ShopLoginScreen()),
-                              (route) => false
-                        );
+                          submit();
                         }
 
                       },

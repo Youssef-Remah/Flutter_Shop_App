@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:shop_app/layout/shop_layout.dart';
 import 'package:shop_app/modules/login/cubit.dart';
 import 'package:shop_app/modules/login/states.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:shop_app/shared/components/components.dart';
+import 'package:shop_app/shared/network/local/cache_helper.dart';
 
 class ShopLoginScreen extends StatefulWidget {
   const ShopLoginScreen({super.key});
@@ -35,32 +38,28 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
           {
             if(state.loginModel.status)
             {
-              showToast(
-                borderRadius: BorderRadius.circular(10.0),
-                state.loginModel.message,
-                context: context,
-                animation: StyledToastAnimation.slideFromBottom,
-                reverseAnimation: StyledToastAnimation.slideToBottom,
-                position: StyledToastPosition.bottom,
-                duration: const Duration(seconds: 5),
-                animDuration: const Duration(milliseconds: 250),
-                backgroundColor: Colors.green,
-                textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
-              );
+              CacheHelper.saveData(key: 'token', value: state.loginModel.data!.token).then((value){
+
+                showFlutterToast(
+                  context: context,
+                  text: state.loginModel.message,
+                  state: ToastStates.SUCCESS,
+                );
+
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute (builder: (BuildContext context) => const ShopLayout()),
+                        (route) => false
+                );
+
+              });
             }
             else
             {
-              showToast(
-                borderRadius: BorderRadius.circular(10.0),
-                state.loginModel.message,
+              showFlutterToast(
                 context: context,
-                animation: StyledToastAnimation.slideFromBottom,
-                reverseAnimation: StyledToastAnimation.slideToBottom,
-                position: StyledToastPosition.bottom,
-                duration: const Duration(seconds: 5),
-                animDuration: const Duration(milliseconds: 250),
-                backgroundColor: Colors.red,
-                textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
+                text: state.loginModel.message,
+                state: ToastStates.ERROR,
               );
             }
           }
