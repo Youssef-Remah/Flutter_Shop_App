@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/cubit/cubit.dart';
 import 'package:shop_app/layout/cubit/states.dart';
+import 'package:shop_app/models/categories_model.dart';
 import 'package:shop_app/models/home_model.dart';
 
 class ProductsScreen extends StatefulWidget {
@@ -18,23 +19,27 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit, ShopStates>(
       listener: (BuildContext context, ShopStates state) {  },
+
       builder: (BuildContext context, ShopStates state) {
 
+        ShopCubit cubit = ShopCubit.get(context);
+
         return ConditionalBuilder(
-            condition: ShopCubit.get(context).isHomeDataReceived,
-            builder: (context) => productsBuilder(ShopCubit.get(context).homeModel),
+            condition: cubit.isHomeDataReceived && cubit.isCategoriesDataReceived,
+            builder: (context) => productsBuilder(cubit.homeModel, cubit.categoriesModel),
             fallback: (context) => const Center(child: CircularProgressIndicator()),
         );
       },
     );
   }
 
-  Widget productsBuilder(HomeModel model)
+  Widget productsBuilder(HomeModel model, CategoriesModel categoriesModel)
   {
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children:
         [
           CarouselSlider(
@@ -60,6 +65,41 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
           ),
           const SizedBox(height: 10.0,),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 10.0,),
+                Container(
+                  height: 100.0,
+                  child: ListView.separated(
+                    physics: BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) => buildCategoryItem(categoriesModel.data!.data[index]),
+                    separatorBuilder: (BuildContext context, int index) => SizedBox(width: 10.0,),
+                    itemCount: categoriesModel.data!.data.length,
+                  ),
+                ),
+                const SizedBox(height: 20.0,),
+                Text(
+                  'New Products',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10.0,),
           Container(
             color: Colors.grey[300],
             child: GridView.count(
@@ -80,7 +120,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  Widget buildGridProduct(ProductModel model){
+  Widget buildGridProduct(ProductModel model)
+  {
     return Container(
       color: Colors.white,
       child: Column(
@@ -160,6 +201,36 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildCategoryItem(DataModel model)
+  {
+
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
+      children:
+      [
+        Image(
+          image: NetworkImage('${model.image}'),
+          height: 100.0,
+          width: 100.0,
+          fit: BoxFit.cover,
+        ),
+        Container(
+          width: 100.0,
+          color: Colors.black.withOpacity(0.8),
+          child: Text(
+            '${model.name}',
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

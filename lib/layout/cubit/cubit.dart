@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/cubit/states.dart';
+import 'package:shop_app/models/categories_model.dart';
 import 'package:shop_app/models/home_model.dart';
 import 'package:shop_app/modules/categories/categories_screen.dart';
 import 'package:shop_app/modules/favorites/favorites_screen.dart';
@@ -18,14 +19,12 @@ class ShopCubit extends Cubit<ShopStates>
 
   int currentIndex = 0;
 
-  bool isHomeDataReceived = false;
-
   List<Widget> bottomNavScreens =
   [
-    ProductsScreen(),
-    CategoriesScreen(),
-    FavoritesScreen(),
-    SettingsScreen(),
+    const ProductsScreen(),
+    const CategoriesScreen(),
+    const FavoritesScreen(),
+    const SettingsScreen(),
   ];
 
   void changeBottomNavIndex(int index)
@@ -35,6 +34,8 @@ class ShopCubit extends Cubit<ShopStates>
   }
 
   late HomeModel homeModel;
+
+  bool isHomeDataReceived = false;
 
   void getHomeData()
   {
@@ -55,6 +56,29 @@ class ShopCubit extends Cubit<ShopStates>
       print('inside get home data');
       print(error.toString());
       emit(ShopErrorHomeDataState());
+    });
+  }
+
+
+  late CategoriesModel categoriesModel;
+
+  bool isCategoriesDataReceived = false;
+
+  void getCategories()
+  {
+    DioHelper.getData(url: GET_CATEGORIES, token: token).then((value) {
+
+      categoriesModel = CategoriesModel.fromJson(value.data);
+
+      isCategoriesDataReceived = true;
+
+      emit(ShopSuccessCategoriesState());
+
+    }).catchError((error){
+
+      print('inside get categories');
+      print(error.toString());
+      emit(ShopErrorCategoriesState());
     });
   }
 
