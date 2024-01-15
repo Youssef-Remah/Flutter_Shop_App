@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:shop_app/modules/login/shop_login_screen.dart';
+import 'package:shop_app/shared/network/local/cache_helper.dart';
 
 void showFlutterToast({
   required context,
@@ -51,4 +53,15 @@ Color chooseToastState({
   }
 
   return color;
+}
+
+void signOut(context)
+{
+  CacheHelper.removeData(key: 'token').then((value){
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute (builder: (BuildContext context) => const ShopLoginScreen()),
+            (route) => false
+    );
+  });
 }
