@@ -43,19 +43,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             fit: BoxFit.cover,
           ),
 
-          SizedBox(width: 20.0,),
+          const SizedBox(width: 20.0,),
 
           Text(
             '${model.name}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          Spacer(),
+          const Spacer(),
 
-          Icon(Icons.arrow_forward_ios),
+          const Icon(Icons.arrow_forward_ios),
         ],
       ),
     );

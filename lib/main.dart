@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/cubit/cubit.dart';
@@ -21,8 +20,9 @@ void main() async
 
   Bloc.observer = MyBlocObserver();
 
-  bool onBoarding = CacheHelper.getData(key: 'onBoarding');
+  bool? onBoarding = CacheHelper.getData(key: 'onBoarding');
   token = CacheHelper.getData(key: 'token');
+  print(token);
 
   Widget startWidget;
 
@@ -30,16 +30,16 @@ void main() async
   {
     if(token != null)
     {
-      startWidget = ShopLayout();
+      startWidget = const ShopLayout();
     }
     else
     {
-      startWidget = ShopLoginScreen();
+      startWidget = const ShopLoginScreen();
     }
   }
   else
   {
-    startWidget = OnBoardingScreen();
+    startWidget = const OnBoardingScreen();
   }
 
 
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
 
       providers:
       [
-        BlocProvider(create: (BuildContext context) => ShopCubit()..getHomeData()..getCategories()),
+        BlocProvider(create: (BuildContext context) => ShopCubit()..getHomeData()..getCategories()..getFavorites()),
       ],
 
       child: MaterialApp(

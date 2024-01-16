@@ -54,11 +54,11 @@ class ProductModel
 {
   int? id;
 
-  dynamic? price;
+  dynamic price;
 
-  dynamic? oldPrice;
+  dynamic oldPrice;
 
-  dynamic? discount;
+  dynamic discount;
 
   String? image;
 

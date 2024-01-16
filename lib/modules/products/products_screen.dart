@@ -6,6 +6,7 @@ import 'package:shop_app/layout/cubit/cubit.dart';
 import 'package:shop_app/layout/cubit/states.dart';
 import 'package:shop_app/models/categories_model.dart';
 import 'package:shop_app/models/home_model.dart';
+import 'package:shop_app/shared/components/components.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -18,7 +19,21 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit, ShopStates>(
-      listener: (BuildContext context, ShopStates state) {  },
+      listener: (BuildContext context, ShopStates state) {
+
+        if(state is ShopSuccessChangeFavoritesState)
+        {
+          if(!state.model.status)
+          {
+            showFlutterToast(
+                context: context,
+                text: state.model.message,
+                state: ToastStates.ERROR
+            );
+          }
+        }
+
+      },
 
       builder: (BuildContext context, ShopStates state) {
 
@@ -26,14 +41,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
         return ConditionalBuilder(
             condition: cubit.isHomeDataReceived && cubit.isCategoriesDataReceived,
-            builder: (context) => productsBuilder(cubit.homeModel, cubit.categoriesModel),
+            builder: (context) => productsBuilder(cubit.homeModel, cubit.categoriesModel, context),
             fallback: (context) => const Center(child: CircularProgressIndicator()),
         );
       },
     );
   }
 
-  Widget productsBuilder(HomeModel model, CategoriesModel categoriesModel)
+  Widget productsBuilder(HomeModel model, CategoriesModel categoriesModel, context)
   {
 
     return SingleChildScrollView(
@@ -70,7 +85,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Categories',
                   style: TextStyle(
                     fontSize: 24.0,
@@ -78,18 +93,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ),
                 ),
                 const SizedBox(height: 10.0,),
-                Container(
+                SizedBox(
                   height: 100.0,
                   child: ListView.separated(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) => buildCategoryItem(categoriesModel.data!.data[index]),
-                    separatorBuilder: (BuildContext context, int index) => SizedBox(width: 10.0,),
+                    separatorBuilder: (BuildContext context, int index) => const SizedBox(width: 10.0,),
                     itemCount: categoriesModel.data!.data.length,
                   ),
                 ),
                 const SizedBox(height: 20.0,),
-                Text(
+                const Text(
                   'New Products',
                   style: TextStyle(
                     fontSize: 24.0,
@@ -111,7 +126,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               childAspectRatio: 1 / 1.58,
               children: List.generate(
                   model.data!.products.length,
-                  (index) => buildGridProduct(model.data!.products[index]),
+                  (index) => buildGridProduct(model.data!.products[index], context),
               ),
             ),
           )
@@ -120,8 +135,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  Widget buildGridProduct(ProductModel model)
+  Widget buildGridProduct(ProductModel model, context)
   {
+    ShopCubit cubit = ShopCubit.get(context);
+
     return Container(
       color: Colors.white,
       child: Column(
@@ -187,11 +204,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     ),
                     const Spacer(),
                     IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: (){},
-                      icon: const Icon(
-                        Icons.favorite_border,
-                        size: 14.0,
+                      onPressed: (){
+                        cubit.changeFavorites(model.id!);
+                      },
+                      icon: CircleAvatar(
+                        radius: 15.0,
+                        backgroundColor: cubit.favorites[model.id]!?Colors.blue:Colors.grey,
+                        child: const Icon(
+                          Icons.favorite_border,
+                          size: 14.0,
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   ],
@@ -225,7 +248,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
             ),
           ),
