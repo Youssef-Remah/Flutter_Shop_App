@@ -1,41 +1,42 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/layout/shop_layout.dart';
-import 'package:shop_app/modules/login/cubit/cubit.dart';
-import 'package:shop_app/modules/login/cubit/states.dart';
-import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:shop_app/modules/register/shop_register_screen.dart';
+import 'package:shop_app/modules/register/cubit/cubit.dart';
+import 'package:shop_app/modules/register/cubit/states.dart';
 import 'package:shop_app/shared/components/components.dart';
 import 'package:shop_app/shared/components/constants.dart';
 import 'package:shop_app/shared/network/local/cache_helper.dart';
 
-class ShopLoginScreen extends StatefulWidget {
-  const ShopLoginScreen({super.key});
+class ShopRegisterScreen extends StatefulWidget {
+  const ShopRegisterScreen({super.key});
 
   @override
-  State<ShopLoginScreen> createState() => _ShopLoginScreenState();
+  State<ShopRegisterScreen> createState() => _ShopRegisterScreenState();
 }
 
-class _ShopLoginScreenState extends State<ShopLoginScreen> {
+class _ShopRegisterScreenState extends State<ShopRegisterScreen> {
+
+  var formKey = GlobalKey<FormState>();
+
+  var nameController = TextEditingController();
 
   var emailController = TextEditingController();
 
   var passwordController = TextEditingController();
 
-  var formKey = GlobalKey<FormState>();
+  var phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
-    return BlocProvider<ShopLoginCubit>(
+    return BlocProvider(
+      create: (BuildContext context) => ShopRegisterCubit(),
+      child: BlocConsumer<ShopRegisterCubit, ShopRegisterStates>(
 
-      create: (BuildContext context) => ShopLoginCubit(),
-
-      child: BlocConsumer<ShopLoginCubit, ShopLoginStates>(
-
-        listener: (BuildContext context, ShopLoginStates state)
+        listener: (BuildContext context, ShopRegisterStates state)
         {
-          if(state is ShopLoginSuccessState)
+          if(state is ShopRegisterSuccessState)
           {
             if(state.loginModel.status)
             {
@@ -68,9 +69,9 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
           }
         },
 
-        builder: (BuildContext context, ShopLoginStates state)
+        builder: (BuildContext context, ShopRegisterStates state)
         {
-          ShopLoginCubit cubit = ShopLoginCubit.get(context);
+          ShopRegisterCubit cubit = ShopRegisterCubit.get(context);
 
           return Scaffold(
             appBar: AppBar(),
@@ -85,7 +86,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                       children:
                       [
                         const Text(
-                          'Sign In',
+                          'Sign Up',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 30.0,
@@ -97,7 +98,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                         ),
 
                         const Text(
-                          'Sign In and Browse our Hot Offers!',
+                          'Sign Up and Browse our Hot Offers!',
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 15.0,
@@ -114,6 +115,34 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                           child: Column(
                             children:
                             [
+                              TextFormField(
+                                controller: nameController,
+                                keyboardType: TextInputType.name,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  labelText: 'User Name',
+                                  prefixIcon: const Icon(Icons.person),
+                                ),
+                                validator: (String? nameValue)
+                                {
+                                  if(nameValue == null || nameValue.isEmpty)
+                                  {
+                                    return 'Please Enter your Name!';
+                                  }
+                                  else
+                                  {
+                                    return null;
+                                  }
+
+                                },
+                              ),
+
+                              const SizedBox(
+                                height: 30.0,
+                              ),
+
                               TextFormField(
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
@@ -141,6 +170,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                               const SizedBox(
                                 height: 30.0,
                               ),
+
 
                               TextFormField(
                                 controller: passwordController,
@@ -178,8 +208,36 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                                 height: 30.0,
                               ),
 
+                              TextFormField(
+                                controller: phoneController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  labelText: 'Phone',
+                                  prefixIcon: const Icon(Icons.phone),
+                                ),
+                                validator: (String? phoneValue)
+                                {
+                                  if(phoneValue == null || phoneValue.isEmpty)
+                                  {
+                                    return 'Please Enter your Phone Number';
+                                  }
+                                  else
+                                  {
+                                    return null;
+                                  }
+
+                                },
+                              ),
+
+                              const SizedBox(
+                                height: 30.0,
+                              ),
+
                               ConditionalBuilder(
-                                condition: state is! ShopLoginLoadingState,
+                                condition: state is! ShopRegisterLoadingState,
                                 builder: (BuildContext context) => SizedBox(
                                   width: double.infinity,
                                   height: 40.0,
@@ -187,14 +245,16 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                                     onPressed: (){
                                       if(formKey.currentState?.validate() != null)
                                       {
-                                        ShopLoginCubit.get(context).userLogin(
+                                        ShopRegisterCubit.get(context).userRegister(
                                           email: emailController.text,
                                           password: passwordController.text,
+                                          name: nameController.text,
+                                          phone: phoneController.text,
                                         );
                                       }
                                     },
                                     child: const Text(
-                                      'SIGN IN',
+                                      'SIGN UP',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15.0,
@@ -205,38 +265,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                                 fallback: (BuildContext context) => const Center(child: CircularProgressIndicator()),
                               )
                             ],
-                        ),
-                    ),
-
-                        const SizedBox(
-                          height: 20.0,
-                        ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-
-                          children: 
-                          [
-                            const Text(
-                                "Don't have an account?",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                            ),
-
-                            TextButton(
-                                onPressed: ()
-                                {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute (
-                                      builder: (BuildContext context) => const ShopRegisterScreen(),
-                                    ),
-                                  );
-                                },
-                                child: const Text('Sign Up')
-                            )
-                          ],
+                          ),
                         ),
                       ],
                     ),
@@ -245,7 +274,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

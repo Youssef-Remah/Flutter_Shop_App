@@ -2,7 +2,7 @@ class ShopLoginModel
 {
   late bool status;
 
-  late String message;
+  String? message;
 
   UserData? data;
 
@@ -29,9 +29,9 @@ class UserData
 
   late String image;
 
-  late int points;
+  int? points;
 
-  late int credit;
+  int? credit;
 
   late String token;
 
