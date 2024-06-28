@@ -1,16 +1,49 @@
-# shop_app
+# Shop App
+This Flutter application provides a shopping experience, allowing users to browse, search, and favorite products across various categories.
 
-A new Flutter project.
+## Features
 
-## Getting Started
+### Sign In/Sign Up:
+- Users can create a new account or sign in to an existing account to access the app.
 
-This project is a starting point for a Flutter application.
+### Home Page:
+- The home page displays all new products, keeping users updated with the latest items available.
 
-A few resources to get you started if this is your first Flutter project:
+### Favorites:
+- Users can add products to their favorites list for easy access and reference.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Categories
+- Explore products by categories such as:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  - Electronic Devices
+
+  - Sports
+
+  - Lighting
+
+  - Clothes
+
+### Settings
+- Users can update their personal information, including name, email address, and mobile number.
+
+### Search
+- Users can search for products using the search screen to quickly find what they are looking for.
+
+## Installation
+**1- Clone this repository:**
+
+`git clone https://github.com/Youssef-Remah/Flutter_Shop_App.git`
+
+**2- Navigate to the project directory:**
+
+`cd shop-app`
+
+**3- Install the dependencies:**
+
+`flutter pub get`
+
+**4- Run the app:**
+
+`flutter run`
+
+
